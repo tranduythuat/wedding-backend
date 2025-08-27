@@ -1,0 +1,47 @@
+# OS / IDE files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# PHP / Composer
+/vendor/
+/composer.lock
+
+# Symfony cache & logs
+/var/cache/
+/var/log/
+/var/sessions/
+
+# Symfony config secret keys
+/config/secrets/*/
+/!.gitignore
+
+# Node / Frontend
+/node_modules/
+/npm-debug.log
+/yarn-error.log
+/package-lock.json
+/pnpm-lock.yaml
+
+# Build assets (Webpack Encore, Vite…)
+/public/build/
+/public/bundles/
+/public/assets/
+/public/hot
+
+# PHPUnit / test artifacts
+.phpunit.result.cache
+coverage/
+
+# Docker related
+/.docker/
+/docker-compose.override.yml
+
+# Environment variables
+.env.local
+.env.*.local
+.env.test
+.env.dev
+.env.prod

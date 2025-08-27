@@ -1,0 +1,48 @@
+services:
+    php:
+        image: ghcr.io/sylius/sylius-php:8.3-alpine
+        working_dir: /srv/sylius
+        volumes:
+            - .:/srv/sylius
+            - ./docker/php/conf.d/timezone.ini:/usr/local/etc/php/conf.d/timezone.ini
+            - ./docker/php/conf.d/php.ini:/usr/local/etc/php/conf.d/php.ini
+        depends_on:
+            - mysql
+    mysql:
+        image: mysql:8.4
+        healthcheck:
+            test: '/usr/bin/mysql --execute "SHOW databases;"'
+            timeout: 3s
+            interval: 1s
+            retries: 10
+        environment:
+            MYSQL_DATABASE: wedding_shop
+            MYSQL_USER: sylius
+            MYSQL_PASSWORD: sylius
+            MYSQL_ROOT_PASSWORD: root
+        ports:
+            - "3307:3306"
+        volumes:
+            - db_data:/var/lib/mysql
+    nginx:
+        image: ghcr.io/sylius/sylius-nginx:latest
+        ports:
+            - "8080:80"
+        volumes:
+            - .:/srv/sylius
+            - ./docker/nginx/conf.d:/etc/nginx/conf.d
+        depends_on:
+            - php
+    node:
+        image: node:22
+        working_dir: /srv/sylius
+        volumes:
+            - .:/srv/sylius
+        command: sh -c "yarn install && yarn build"
+
+    mailhog:
+        image: mailhog/mailhog:latest
+        ports:
+            - "8025:8025"
+volumes:
+  db_data:
