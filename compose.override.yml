@@ -9,7 +9,7 @@ services:
             # You can move these environment variables to your .env.local file
             APP_ENV: ${ENV:-prod}
             APP_SECRET: EDITME
-            DATABASE_URL: "mysql://sylius:sylius@wedding-backend-mysql-1:3306/wedding_store_%kernel.environment%?serverVersion=8.4&charset=utf8mb4"
+            DATABASE_URL: "mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}?serverVersion=8.4&charset=utf8mb4"
             # DATABASE_URL: "mysql://root@mysql/sylius_%kernel.environment%"
             MAILER_DSN: smtp://mailhog:1025
             MESSENGER_TRANSPORT_DSN: doctrine://default
