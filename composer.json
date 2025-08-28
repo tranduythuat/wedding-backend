@@ -47,7 +47,7 @@
         "friends-of-behat/symfony-extension": "^2.6.2",
         "friends-of-behat/variadic-extension": "^1.6",
         "lchrusciel/api-test-case": "^5.3",
-        "nyholm/psr7": "^1.8",
+        "nyholm/psr7": "*",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.0",
         "phpstan/phpstan-doctrine": "^2.0",

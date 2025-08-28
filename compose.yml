@@ -8,41 +8,63 @@ services:
             - ./docker/php/conf.d/php.ini:/usr/local/etc/php/conf.d/php.ini
         depends_on:
             - mysql
+        networks:
+            - backend-net
     mysql:
         image: mysql:8.4
         healthcheck:
-            test: '/usr/bin/mysql --execute "SHOW databases;"'
-            timeout: 3s
-            interval: 1s
-            retries: 10
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+            timeout: 5s
+            interval: 10s
+            retries: 5
         environment:
-            MYSQL_DATABASE: wedding_shop
-            MYSQL_USER: sylius
-            MYSQL_PASSWORD: sylius
-            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: ${MYSQL_DATABASE}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
         ports:
             - "3307:3306"
         volumes:
             - db_data:/var/lib/mysql
+        networks:
+            - backend-net
     nginx:
         image: ghcr.io/sylius/sylius-nginx:latest
         ports:
-            - "8080:80"
+            - "80"
         volumes:
             - .:/srv/sylius
             - ./docker/nginx/conf.d:/etc/nginx/conf.d
         depends_on:
             - php
+        environment:
+            - VIRTUAL_HOST=api.weddingshop.ddns.net
+            - LETSENCRYPT_HOST=api.weddingshop.ddns.net
+            - LETSENCRYPT_EMAIL=thuattran1810@gmail.com
+        networks:
+            - backend-net
+            - proxy-net
     node:
         image: node:22
         working_dir: /srv/sylius
         volumes:
             - .:/srv/sylius
         command: sh -c "yarn install && yarn build"
+        networks:
+            - backend-net
 
     mailhog:
         image: mailhog/mailhog:latest
         ports:
             - "8025:8025"
+        networks:
+            - backend-net
 volumes:
-  db_data:
+    db_data:
+
+networks:
+    backend-net:
+        driver: bridge
+    proxy-net:
+        external: true
+        

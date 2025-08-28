@@ -45,3 +45,4 @@ coverage/
 .env.test
 .env.dev
 .env.prod
+.env
