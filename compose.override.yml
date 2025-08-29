@@ -9,8 +9,7 @@ services:
             # You can move these environment variables to your .env.local file
             APP_ENV: ${ENV:-prod}
             APP_SECRET: EDITME
-            DATABASE_URL: "mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}?serverVersion=8.4&charset=utf8mb4"
-            # DATABASE_URL: "mysql://root@mysql/sylius_%kernel.environment%"
+            DATABASE_URL: "mysql://root@mysql/sylius_%kernel.environment%"
             MAILER_DSN: smtp://mailhog:1025
             MESSENGER_TRANSPORT_DSN: doctrine://default
             SYLIUS_MESSENGER_TRANSPORT_MAIN_DSN: doctrine://default
@@ -20,11 +19,11 @@ services:
             SYLIUS_MESSENGER_TRANSPORT_PAYMENT_REQUEST_DSN: sync://
             SYLIUS_MESSENGER_TRANSPORT_PAYMENT_REQUEST_FAILED_DSN: sync://
             PHP_DATE_TIMEZONE: ${PHP_DATE_TIMEZONE:-UTC}
-            # XDEBUG_MODE: debug
-            # XDEBUG_CONFIG: >-
-            #     client_host=host.docker.internal
-            #     client_port=9003
-            #     log=/dev/stdout
+            XDEBUG_MODE: debug
+            XDEBUG_CONFIG: >-
+                client_host=host.docker.internal
+                client_port=9003
+                log=/dev/stdout
             # This should correspond to the server declared in PHPStorm `Preferences | Languages & Frameworks | PHP | Servers`
             # Then PHPStorm will use the corresponding path mappings
             PHP_IDE_CONFIG: serverName=sylius
@@ -38,33 +37,27 @@ services:
           # if you develop on Linux, you may use a bind-mounted host directory instead
 #          - ./public/media:/srv/sylius/public/media:rw
           - public-media:/srv/sylius/public/media:rw
-        networks:
-            - backend-net
+          - ./docker/php/conf.d/php.ini:/usr/local/etc/php/conf.d/php.ini:rw
     mysql:
         volumes:
             - mysql-data:/var/lib/mysql:rw
         ports:
             - "3306:3306"
-        networks:
-            - backend-net
     nginx:
         depends_on:
             php:
                 condition: service_started
+        build: ./docker/nginx
         volumes:
             - ./public:/srv/sylius/public:ro
+            - ./docker/nginx/conf.d:/etc/nginx/conf.d
             # if you develop on Linux, you may use a bind-mounted host directory instead
 #            - ./public/media:/srv/sylius/public/media:ro
-            - public-media:/srv/sylius/public/media:ro,nocopy
-        environment:
-            - VIRTUAL_HOST=api.weddingshop.ddns.net
-            - LETSENCRYPT_HOST=api.weddingshop.ddns.net
-            - LETSENCRYPT_EMAIL=thuattran1810@gmail.com
+            # - public-media:/srv/sylius/public/media:ro,nocopy
         ports:
-            - "80"
-        networks:
-            - backend-net
-            - proxy-net
+            - "80:80"
+        environment:
+            - NGINX_ENTRYPOINT_QUIET_LOGS=1
     nodejs:
         image: node:${NODE_VERSION:-22}-alpine
         user: ${DOCKER_USER:-1000:1000}
@@ -77,20 +70,10 @@ services:
         volumes:
             - .:/srv/sylius:rw,cached
             - ./public:/srv/sylius/public:rw,delegated
-        networks:
-            - backend-net
     mailhog:
         ports:
             - "8025:8025"
-        networks:
-            - backend-net
 
 volumes:
     mysql-data:
     public-media:
-
-networks:
-    backend-net:
-        driver: bridge
-    proxy-net:
-        external: true

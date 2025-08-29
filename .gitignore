@@ -1,48 +1,63 @@
-# OS / IDE files
-.DS_Store
-Thumbs.db
-.idea/
-.vscode/
-*.swp
+/public/assets
+/public/build
+/public/css
+/public/js
+/public/media
+!/public/media/image/.gitkeep
 
-# PHP / Composer
-/vendor/
+/etc/build/*
+!/etc/build/.gitignore
+
+/drivers/
+
+/docker-compose.override.yaml
+/docker-compose.override.yml
+/compose.override.yaml
+/compose.override.yml
+/docker/mysql/data/
+
+###> symfony/framework-bundle ###
 /composer.lock
+/.env.*.local
+/.env.local
+/.env.local.php
+/public/bundles
+/var/
+/vendor/
+###< symfony/framework-bundle ###
 
-# Symfony cache & logs
-/var/cache/
-/var/log/
-/var/sessions/
+###> friendsofphp/php-cs-fixer ###
+/.php_cs
+/.php_cs.cache
+###< friendsofphp/php-cs-fixer ###
 
-# Symfony config secret keys
-/config/secrets/*/
-/!.gitignore
+###> phpunit/phpunit ###
+/.phpunit.result.cache
+/phpunit.xml
+###< phpunit/phpunit ###
 
-# Node / Frontend
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+!/config/jwt/*-test.pem
+###< lexik/jwt-authentication-bundle ###
+
+###> symfony/webpack-encore-bundle ###
 /node_modules/
+/public/build/
 /npm-debug.log
 /yarn-error.log
+/yarn.lock
 /package-lock.json
-/pnpm-lock.yaml
+###< symfony/webpack-encore-bundle ###
 
-# Build assets (Webpack Encore, Vite…)
-/public/build/
-/public/bundles/
-/public/assets/
-/public/hot
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
 
-# PHPUnit / test artifacts
-.phpunit.result.cache
-coverage/
+###> friends-of-behat/symfony-extension ###
+/behat.yml
+###< friends-of-behat/symfony-extension ###
 
-# Docker related
-/.docker/
-/docker-compose.override.yml
-
-# Environment variables
-.env.local
-.env.*.local
-.env.test
-.env.dev
-.env.prod
-.env
+###> liip/imagine-bundle ###
+/public/media/cache/
+###< liip/imagine-bundle ###
